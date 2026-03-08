@@ -5,9 +5,13 @@ metadata:
   namespace: nullroute
   annotations:
     metallb.io/address-pool: local-pool
+    metallb.io/loadBalancerIPs: 10.0.39.197,2001:470:3838:39::197
 spec:
   type: LoadBalancer
-  loadBalancerIP: 10.0.39.197
+  ipFamilyPolicy: PreferDualStack
+  ipFamilies:
+    - IPv4
+    - IPv6
   selector:
     app: nullroute
   ports:

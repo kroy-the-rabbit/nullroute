@@ -57,7 +57,8 @@ func main() {
 }
 
 func runOnce(parent context.Context, engine *syncer.Engine) error {
-	ctx, cancel := context.WithTimeout(parent, 4*time.Minute)
+	// Initial full-table loads can exceed a few minutes on cold start.
+	ctx, cancel := context.WithTimeout(parent, 20*time.Minute)
 	defer cancel()
 
 	prefixes, err := sources.FetchAndParse(ctx, engine.Config())

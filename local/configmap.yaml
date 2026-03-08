@@ -35,5 +35,9 @@ data:
         afi-safis:
           - config:
               afi-safi-name: ipv4-unicast
+      - config:
+          neighbor-address: 2001:470:3838:39::1
+          peer-as: 4207654321
+        afi-safis:
           - config:
               afi-safi-name: ipv6-unicast
