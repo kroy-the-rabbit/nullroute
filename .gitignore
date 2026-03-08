@@ -1,0 +1,8 @@
+/bin/
+/dist/
+/.cache/
+/.tmp/
+*.log
+*.out
+*.test
+coverage.txt

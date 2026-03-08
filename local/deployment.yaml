@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nullroute
+  namespace: nullroute
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nullroute
+  template:
+    metadata:
+      labels:
+        app: nullroute
+    spec:
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      imagePullSecrets:
+        - name: ghcr-pull-secret
+      containers:
+        - name: gobgpd
+          image: ghcr.io/kroy-the-rabbit/nullroute-gobgpd:latest
+          args:
+            - -f
+            - /etc/gobgp/gobgpd.yaml
+          ports:
+            - name: bgp
+              containerPort: 179
+              protocol: TCP
+            - name: grpc
+              containerPort: 50051
+              protocol: TCP
+          volumeMounts:
+            - name: config
+              mountPath: /etc/gobgp
+        - name: nullroute
+          image: ghcr.io/kroy-the-rabbit/nullroute:latest
+          imagePullPolicy: Always
+          args:
+            - -config
+            - /etc/nullroute/config.yaml
+          volumeMounts:
+            - name: config
+              mountPath: /etc/nullroute
+            - name: state
+              mountPath: /var/lib/nullroute
+      volumes:
+        - name: config
+          configMap:
+            name: nullroute-config
+        - name: state
+          emptyDir: {}
