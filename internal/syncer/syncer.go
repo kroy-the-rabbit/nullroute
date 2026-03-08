@@ -36,17 +36,24 @@ func (e *Engine) Sync(ctx context.Context, desired []netip.Prefix) error {
 	log.Printf("sync: desired=%d current=%d add=%d del=%d", len(desired), len(current), len(add), len(del))
 
 	for _, p := range del {
-		if err := e.gobgp(ctx, "global", "rib", "del", p.String()); err != nil {
+		if err := e.gobgp(ctx, "global", "rib", "-a", familyForPrefix(p), "del", p.String()); err != nil {
 			return fmt.Errorf("failed deleting %s: %w", p, err)
 		}
 	}
 	for _, p := range add {
-		if err := e.gobgp(ctx, "global", "rib", "add", p.String(), "community", e.cfg.BlackholeComm); err != nil {
+		if err := e.gobgp(ctx, "global", "rib", "-a", familyForPrefix(p), "add", p.String(), "community", e.cfg.BlackholeComm); err != nil {
 			return fmt.Errorf("failed adding %s: %w", p, err)
 		}
 	}
 
 	return saveState(e.cfg.StateFile, desired)
+}
+
+func familyForPrefix(prefix netip.Prefix) string {
+	if prefix.Addr().Is4() {
+		return "ipv4"
+	}
+	return "ipv6"
 }
 
 func (e *Engine) gobgp(ctx context.Context, args ...string) error {

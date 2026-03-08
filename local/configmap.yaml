@@ -28,8 +28,12 @@ data:
       config:
         as: 65010
         router-id: 10.0.39.197
-    afi-safis:
+    neighbors:
       - config:
-          afi-safi-name: ipv4-unicast
-      - config:
-          afi-safi-name: ipv6-unicast
+          neighbor-address: 10.0.39.1
+          peer-as: 4207654321
+        afi-safis:
+          - config:
+              afi-safi-name: ipv4-unicast
+          - config:
+              afi-safi-name: ipv6-unicast
