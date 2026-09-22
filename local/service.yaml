@@ -5,13 +5,16 @@ metadata:
   namespace: nullroute
   annotations:
     metallb.io/address-pool: local-pool
-    metallb.io/loadBalancerIPs: 10.0.39.197,2001:470:3838:39::197
+    metallb.io/loadBalancerIPs: 10.0.39.197
 spec:
   type: LoadBalancer
-  ipFamilyPolicy: PreferDualStack
+  externalTrafficPolicy: Local
+  # SingleStack: the dual-stack LB made k3s's IPv6 kube-proxy fight the IPv4 one
+  # for healthCheckNodePort 32458 (event spam every 30s). Peers talk to the
+  # node IPs directly, so the v6 LB address was unused.
+  ipFamilyPolicy: SingleStack
   ipFamilies:
     - IPv4
-    - IPv6
   selector:
     app: nullroute
   ports:
