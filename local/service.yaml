@@ -8,6 +8,7 @@ metadata:
     metallb.io/loadBalancerIPs: 10.0.39.197,2001:470:3838:39::197
 spec:
   type: LoadBalancer
+  externalTrafficPolicy: Local
   ipFamilyPolicy: PreferDualStack
   ipFamilies:
     - IPv4
